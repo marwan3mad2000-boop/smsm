@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى أجمل ما في حياتي ❤️</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #2c0b12 0%, #4a1525 50%, #1f050b 100%);
+            color: #fce7f3;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating Hearts Animation */
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: rgba(236, 72, 153, 0.4);
+            animation: floatHeart 6s infinite ease-in-out;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Envelope Open Animation */
+        .envelope-container {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background: #991b1b;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            transition: transform 0.6s ease;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #b91c1c;
+            transform-origin: top;
+            transition: transform 0.6s ease 0.2s;
+            z-index: 3;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            right: 15px;
+            height: 180px;
+            background: #fffbeb;
+            color: #4a1525;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.6s ease 0.4s;
+            z-index: 2;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-110px);
+            z-index: 4;
+            height: 280px;
+        }
+
+        /* Custom scrollbar for letter */
+        .letter::-webkit-scrollbar {
+            width: 4px;
+        }
+        .letter::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 4px;
+        }
+
+        /* Gold gradient text */
+        .gold-text {
+            background: linear-gradient(135deg, #fef08a 0%, #ca8a04 50%, #fef08a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col items-center justify-start py-10 px-4 selection:bg-pink-500 selection:text-white">
+
+    <!-- Background Floating Hearts Container -->
+    <div id="hearts-container"></div>
+
+    <!-- Password Lock Screen (Modal) -->
+    <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
+        <div class="bg-rose-950/90 border border-rose-500/40 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-600/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl"></div>
+            
+            <div class="w-16 h-16 bg-rose-900/60 border border-rose-500/30 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <i class="fa-solid fa-lock text-2xl text-amber-300"></i>
+            </div>
+            
+            <h2 class="text-2xl font-bold gold-text mb-2">مساحة خاصة جداً</h2>
+            <p class="text-rose-200/80 text-sm mb-6">أدخلي تاريخ ميلادك المميز (Your Birthday) لفتح الويب سايت</p>
+
+            <div class="space-y-4 text-right">
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 mb-1">اختر يوم الميلاد:</label>
+                    <select id="daySelect" class="w-full bg-rose-900/50 border border-rose-500/40 text-rose-100 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 transition-all text-sm">
+                        <option value="" disabled selected>-- اختاري اليوم --</option>
+                        <!-- Options generated dynamically or statically -->
+                        <script>
+                            for(let i=1; i<=31; i++) {
+                                document.write(`<option value="${i}">${i}</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 mb-1">اختر شهر الميلاد (فبراير):</label>
+                    <select id="monthSelect" class="w-full bg-rose-900/50 border border-rose-500/40 text-rose-100 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 transition-all text-sm">
+                        <option value="" disabled selected>-- اختاري الشهر --</option>
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير (2)</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    </select>
+                </div>
+
+                <div id="errorMsg" class="text-rose-400 text-xs text-center font-medium hidden">
+                    ❌ التاريخ غير صحيح! جربي مرة أخرى (Your Birthday)
+                </div>
+
+                <button onclick="checkPassword()" class="w-full mt-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2">
+                    <span>فتح الهدية</span>
+                    <i class="fa-solid fa-key text-xs"></i>
+                </button>
+            </div>
+            
+            <p class="text-[11px] text-rose-300/50 mt-6 tracking-wide">Your Birthday Secret Lock 🔒</p>
+        </div>
+    </div>
+
+    <!-- Main Website Content (Hidden until correct password) -->
+    <div id="mainContent" class="w-full flex flex-col items-center opacity-0 transition-opacity duration-700 pointer-events-none">
+        
+        <!-- Header Section -->
+        <header class="text-center z-10 mb-12 max-w-2xl">
+            <div class="inline-block p-3 rounded-full bg-rose-950/60 border border-rose-500/30 mb-4 shadow-lg shadow-rose-950/50 animate-pulse">
+                <i class="fa-solid fa-heart text-3xl text-rose-500"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold gold-text mb-3 tracking-wide">إلى من ملكت قلبي وروحي</h1>
+            <p class="text-rose-200/80 text-lg">مساحة صغيرة جمعت فيها كل مشاعري الصادقة لكِ وحدكِ ❤️</p>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="w-full max-w-4xl z-10 flex flex-col items-center gap-16">
+
+            <!-- Section 1: The Love Letter Envelope -->
+            <section class="w-full flex flex-col items-center bg-rose-950/30 backdrop-blur-md p-8 rounded-3xl border border-rose-500/20 shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-rose-100 mb-2 text-center">رسالة حب خاصة لكِ</h2>
+                <p class="text-rose-300/70 text-sm mb-8 text-center">اضغطي على الظرف لفتح الجواب وقراءة ما يحمله قلبي لكِ</p>
+
+                <!-- Envelope Wrapper -->
+                <div class="envelope-container my-6" id="envelopeWrapper" onclick="toggleEnvelope()">
+                    <div class="envelope" id="envelope">
+                        <div class="envelope-flap"></div>
+                        <!-- The Hidden/Shown Letter -->
+                        <div class="letter flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2 border-b border-rose-200 pb-1">
+                                    <span class="text-xs font-semibold text-amber-700">رسالة من قلبي</span>
+                                    <i class="fa-solid fa-heart text-rose-600 text-xs"></i>
+                                </div>
+                                <p class="text-xs md:text-sm leading-relaxed text-gray-800 font-medium">
+                                    "منذ أن دخلتي حياتي وأنتِ تزرعين النور في كل زاوية منها. لا توجد كلمات كافية لوصف مدى سعادتي بوجودك بجانبي، وصوتك الذي يهدئ روحي، وابتسامتك التي تعيد الحياة لقلبي. أنتِ لستِ فقط حبيبتي، بل أنتِ وطني وكل أمنياني. أحبكِ اليوم وغداً وإلى الأبد."
+                                </p>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-xs font-bold text-rose-900 block">المخلص لكِ دائماً ❤️</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Envelope Seal Icon -->
+                    <div id="envelopeSeal" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center shadow-lg border-2 border-amber-200 z-10 transition-opacity duration-300">
+                        <i class="fa-solid fa-envelope-open-text text-white text-lg"></i>
+                    </div>
+                </div>
+                <p id="clickHint" class="text-xs text-amber-300/80 mt-6 animate-bounce">👆 اضغطي هنا لفتح الظرف</p>
+            </section>
+
+            <!-- Section 2: Why I Love You Cards -->
+            <section class="w-full flex flex-col items-center bg-rose-950/30 backdrop-blur-md p-8 rounded-3xl border border-rose-500/20 shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-bold text-rose-100 mb-2 text-center">ليه أنا بحبك؟</h2>
+                <p class="text-rose-300/70 text-sm mb-8 text-center">اضغطي على كل بطاقة لتكتشفي سبباً جديداً من أسباب عشقي لكِ</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <!-- Card 1 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-face-smile-beam"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">ابتسامتكِ الساحرة</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                ابتسامتك وحدها قادرة على محو كل تعب أيامي وتغيير مزاجي للأفضل في ثانية واحدة.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-hands-holding-child"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">حنيتك وطيبتك</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                قلبك الطيب وحنانك اللي بيفيض على كل اللي حواليكي، هو أكتر حاجة بتخليني فخور بيكي كل يوم.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">الأمان بوجودك</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                معاكِ بحس إني امتلكت الدنيا بحالها، وبكون في أمان تام كأني في بيتي الحقيقي.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">كلامك ومحادثاتنا</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                أقدر أتكلم معاكي بالساعات من غير ما أمل أبداً، كلامك بيدي طاقة إيجابية لكل تفصيلة في يومي.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">دعمك المستمر</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                دائماً واقفة في ضهري، مشجعتني أكون نسخة أفضل من نفسي، ومؤمنة بيا في كل خطوة.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div onclick="flipCard(this)" class="cursor-pointer bg-gradient-to-br from-rose-900/60 to-rose-950/80 border border-rose-500/30 p-6 rounded-2xl shadow-xl hover:border-amber-400/50 transition-all duration-300 transform hover:-translate-y-1 text-center group min-h-[180px] flex flex-col justify-center items-center">
+                        <div class="front-content">
+                            <div class="w-12 h-12 bg-rose-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-300 text-xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-infinity"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-rose-100">لأنكِ أنتِ أنتِ</h3>
+                            <p class="text-xs text-rose-300/60 mt-2">اضغطي للقراءة</p>
+                        </div>
+                        <div class="back-content hidden">
+                            <p class="text-sm text-amber-200 leading-relaxed">
+                                مش محتاج سبب تاني غير إنك "أنتِ"، بروحك الجميلة وعفويتك وكل تفاصيلك اللي ساحرة عقلي وقلبي.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-rose-300/60 text-xs z-10 pb-6">
+            <p>صُنع بكل الحب لأجمل إنسانة في الكون ✨</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Check Birthday Password (25 / 2)
+        function checkPassword() {
+            const selectedDay = document.getElementById('daySelect').value;
+            const selectedMonth = document.getElementById('monthSelect').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const lockScreen = document.getElementById('lockScreen');
+            const mainContent = document.getElementById('mainContent');
+
+            if (selectedDay === "25" && selectedMonth === "2") {
+                // Correct password! Hide lock and show main content smoothly
+                lockScreen.style.opacity = '0';
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    mainContent.classList.remove('opacity-0', 'pointer-events-none');
+                }, 500);
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // Envelope open/close toggle
+        function toggleEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const seal = document.getElementById('envelopeSeal');
+            const hint = document.getElementById('clickHint');
+
+            envelope.classList.toggle('open');
+            if (envelope.classList.contains('open')) {
+                seal.style.opacity = '0';
+                hint.textContent = "✨ تم فتح الجواب خصيصاً لكِ";
+            } else {
+                seal.style.opacity = '1';
+                hint.textContent = "👆 اضغطي هنا لفتح الظرف";
+            }
+        }
+
+        // Card flip interactive effect
+        function flipCard(card) {
+            const front = card.querySelector('.front-content');
+            const back = card.querySelector('.back-content');
+            
+            if (front.classList.contains('hidden')) {
+                front.classList.remove('hidden');
+                back.classList.add('hidden');
+                card.classList.remove('bg-rose-900/90', 'border-amber-400');
+            } else {
+                front.classList.add('hidden');
+                back.classList.remove('hidden');
+                card.classList.add('bg-rose-900/90', 'border-amber-400');
+            }
+        }
+
+        // Generate dynamic floating background hearts
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const count = 15;
+
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                
+                const size = Math.random() * 1.5 + 0.8; // rem
+                const left = Math.random() * 100; // vw
+                const duration = Math.random() * 5 + 5; // seconds
+                const delay = Math.random() * 5; // seconds
+
+                heart.style.left = `${left}vw`;
+                heart.style.fontSize = `${size}rem`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `${delay}s`;
+
+                container.appendChild(heart);
+            }
+        }
+
+        window.onload = function() {
+            createFloatingHearts();
+        };
+    </script>
+</body>
+</html>
